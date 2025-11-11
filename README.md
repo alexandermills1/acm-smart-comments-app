@@ -2,36 +2,34 @@
 Developer hiring challenge - Smart Comments App
 
 Build instructions
-complete `backend/.envTEMPLATE` and rename .env
-
-Prerequisites**:  
-- Python 3.10+
-- - Node.js 18+ (includes npm)  
-- PostgreSQL (running locally or via Docker)  
-- Git (to clone the repo)
-
-*move to directory you want to download project*
-git clone https://github.com/alexandermills1/acm-smart-comments-app.git
-code .
-
-Terminal 1:
-cd frontend
-npm install
-npm run watch
-	(places frontend build into `backend/static`)
-
-Terminal 2:
-psql postgres
-CREATE DATABASE smartcomments;
-\q
-
-cd backend
-python3 -m venv venv
-source venv/bin/activate 
-	# (Windows: venv\Scripts\activate)
-pip install -r requirements.txt
-python manage.py migrate
-python manage.py runserver
+	Prerequisites**:  
+	- Python 3.10+
+	- Node.js 18+ (includes npm)  
+	- PostgreSQL (running locally)  
+	- Git (to clone the repo)
+	
+	
+	Terminal 1:
+		*move to directory you want to download project*
+		git clone https://github.com/alexandermills1/acm-smart-comments-app.git
+		code .
+		cd frontend
+		npm install
+		npm run watch
+			(places frontend build into `backend/static`)
+	
+	Terminal 2:
+		psql postgres
+		CREATE DATABASE smartcomments;
+		\q
+	
+		cd backend
+		python3 -m venv venv
+		source venv/bin/activate 
+			# (Windows: venv\Scripts\activate)
+		pip install -r requirements.txt
+		python manage.py migrate
+		python manage.py runserver
 
 
 Create a post
