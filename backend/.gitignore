@@ -17,3 +17,6 @@ db.sqlite3
 # IDEs
 .vscode/
 .idea/
+
+# Static build output (from React)
+static/

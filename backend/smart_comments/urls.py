@@ -1,22 +1,20 @@
 # backend/smart_comments/urls.py
 from django.urls import path
 from .views import (
-    PostListView,
-    PostDetailView,
+    send_the_index,
+	PostCreateView,
+	PostListView,
     CommentCreateView,
-    FlaggedCommentsView
+    FlaggedCommentsView,
+	CommentUnflagView
 )
 
 urlpatterns = [
-    # List all posts
+	path('', send_the_index, name='index'),
+	
+    path('posts/create/', PostCreateView.as_view(), name='post-create'),
     path('posts/', PostListView.as_view(), name='post-list'),
-
-    # Get one post + comments
-    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
-
-    # Add comment to a post
     path('posts/<int:post_pk>/comments/', CommentCreateView.as_view(), name='comment-create'),
-
-    # Moderator: see all flagged
     path('flagged-comments/', FlaggedCommentsView.as_view(), name='flagged-comments'),
+    path('comments/<int:pk>/unflag/', CommentUnflagView.as_view(), name='comment-unflag'),
 ]

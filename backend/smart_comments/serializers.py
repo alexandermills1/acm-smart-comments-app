@@ -15,9 +15,21 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'flagged']
 
 
+class PostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ['id', 'title', 'body']
+
+
 class PostWithCommentsSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
         fields = ['id', 'title', 'body', 'comments']
+
+class CommentUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['flagged']          # only the flag can be changed
+        extra_kwargs = {'flagged': {'required': True}}
