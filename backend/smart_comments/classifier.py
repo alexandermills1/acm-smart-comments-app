@@ -34,7 +34,6 @@ UNICODE_SUSPICIOUS = r'[\u200B-\u200D\u202A-\u202E\u2066-\u2069\uFEFF]'  # Zero-
 def classify_comment(text: str) -> Literal["safe", "needs_review"]:
     """
     Returns 'safe' or 'needs_review'
-    Now protects DATABASE + SERVER from real attacks.
     """
     if not text or not isinstance(text, str):
         return "needs_review"
