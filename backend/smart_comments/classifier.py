@@ -1,6 +1,13 @@
 # backend/smart_comments/classifier.py
 import re
 from typing import Literal
+from openai import OpenAI
+from django.conf import settings
+import openai
+
+# Create an OpenAI client using your API key from settings
+openai.api_key = settings.OPENAI_API_KEY
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 # === 1. Known dangerous patterns (SQLi, XSS, Shell, Traversal) ===
 DANGEROUS_PATTERNS = [
@@ -31,7 +38,7 @@ MIN_LENGTH = 12
 UNICODE_SUSPICIOUS = r'[\u200B-\u200D\u202A-\u202E\u2066-\u2069\uFEFF]'  # Zero-width, RTL, etc.
 
 
-def classify_comment(text: str) -> Literal["safe", "needs_review"]:
+def manual_checks(text: str) -> Literal["safe", "needs_review"]:
     """
     Returns 'safe' or 'needs_review'
     """
@@ -80,3 +87,41 @@ def classify_comment(text: str) -> Literal["safe", "needs_review"]:
 
     # === ALL CHECKS PASSED ===
     return "safe"
+
+def classify_comment(comment_text: str) -> str:
+    """
+    Run manual checks first, then OpenAI moderation if needed.
+    Returns 'needs_review' or 'safe'.
+    """
+    print("\n=== Manual checks ===")
+    manual_result = manual_checks(comment_text)
+    
+    if manual_result == "needs_review":
+        print("→ Manual check flagged this comment.\n")
+        return "needs_review"
+
+    try:
+        print("\n--- OpenAI Moderation Request ---")
+        print(f"Input text: {comment_text}\n")
+        response = client.moderations.create(
+            model="omni-moderation-latest",
+            input=comment_text
+        )
+
+        print("--- OpenAI Moderation Response ---")
+        print(response)
+        print("-----------------------------\n")
+
+        result = response.results[0]
+        flagged = result.flagged
+
+        if flagged:
+            print("→ Result: needs_review (flagged)\n")
+            return "needs_review"
+        else:
+            print("→ Result: ok (not flagged)\n")
+            return "safe"
+
+    except Exception as e:
+        print("Moderation API error:", e)
+        return "needs_review"  # Safe fallback
