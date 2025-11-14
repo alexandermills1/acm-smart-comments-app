@@ -1,7 +1,7 @@
 // frontend/src/components/AddCommentForm.tsx
 import { useState } from "react";
 import axios from "axios";
-import type { Comment } from "../types";  // <-- Add this
+import type { Comment } from "../types";
 
 type Props = {
   postId: number;

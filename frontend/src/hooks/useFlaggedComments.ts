@@ -16,11 +16,10 @@ export const useFlaggedComments = () => {
             id: comment.post,
             title: `Post #${comment.post}`,
             body: "",
-            comments: [], // required
+            comments: [],
           });
         }
 
-        // Safe: we just created it
         const entry = postMap.get(comment.post)!;
         entry.comments.push(comment);
       });

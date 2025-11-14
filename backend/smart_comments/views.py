@@ -5,6 +5,8 @@ from rest_framework.generics import (
     GenericAPIView,
 )
 from rest_framework.mixins import UpdateModelMixin, DestroyModelMixin
+from rest_framework.response import Response
+from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from .models import Post, Comment
@@ -41,7 +43,16 @@ class CommentCreateView(CreateAPIView):
         post_id = self.kwargs['post_pk']
         post = get_object_or_404(Post, pk=post_id)
         text = serializer.validated_data['text']
-        is_flagged = classify_comment(text) == "needs_review"
+        
+        result = classify_comment(text)
+
+        if result == "blocked":
+            return Response(
+                {"error": "Comment blocked: contains dangerous content."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        is_flagged = (result == "flagged")
         serializer.save(post=post, flagged=is_flagged)
 
 

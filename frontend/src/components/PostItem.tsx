@@ -10,7 +10,7 @@ type Props = {
 
 export const PostItem = ({ post, onCommentAdded }: Props) => {
   const [showForm, setShowForm] = useState(false);
-  const visible = (post.comments ?? []).filter((c) => !c.flagged);  // Now valid
+  const visible = (post.comments ?? []).filter((c) => !c.flagged);
 
   return (
     <div className="post-item">

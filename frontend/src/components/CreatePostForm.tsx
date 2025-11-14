@@ -1,5 +1,5 @@
 // frontend/src/components/CreatePostForm.tsx
-import { useState, type FormEvent } from "react";  // type-only import
+import { useState, type FormEvent } from "react";
 import axios from "axios";
 import type { Post } from "../types";
 

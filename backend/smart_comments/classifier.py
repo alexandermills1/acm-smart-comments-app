@@ -40,7 +40,7 @@ UNICODE_SUSPICIOUS = r'[\u200B-\u200D\u202A-\u202E\u2066-\u2069\uFEFF]'  # Zero-
 
 def manual_checks(text: str) -> Literal["safe", "needs_review"]:
     """
-    Returns 'safe' or 'needs_review'
+    Returns 'safe', 'needs_review', blocked
     """
     if not text or not isinstance(text, str):
         return "needs_review"
@@ -53,7 +53,8 @@ def manual_checks(text: str) -> Literal["safe", "needs_review"]:
     text_lower = text.lower()
     for pattern in DANGEROUS_PATTERNS:
         if re.search(pattern, text_lower):
-            return "needs_review"
+            print("→ BLOCKED: DB-dangerous pattern detected.\n")
+            return "blocked"
 
     # --- 3. Detect encoded attacks ---
     if re.search(r'data:text/html', text_lower) or \
@@ -96,9 +97,13 @@ def classify_comment(comment_text: str) -> str:
     print("\n=== Manual checks ===")
     manual_result = manual_checks(comment_text)
     
-    if manual_result == "needs_review":
-        print("→ Manual check flagged this comment.\n")
-        return "needs_review"
+    if manual_result == "blocked":
+        print("→ FINAL: BLOCKED (DB risk)")
+        return "blocked"
+
+    if manual_result == "flagged":
+        print("→ FINAL: FLAGGED (manual heuristics)")
+        return "flagged"
 
     try:
         print("\n--- OpenAI Moderation Request ---")
